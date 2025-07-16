@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=spring
+      - POSTGRES_PASSWORD=7e54f5e9-54a7-424a-a2c7-01004376399f
+    volumes: 
+      - db:/var/lib/postgresql/data
+    networks:
+      - backend_network
+    hostname: postgres
+  backend:
+    build:
+      context: backend
+      target: builder
+    environment:
+      - POSTGRES_USER=spring
+      - POSTGRES_PASSWORD=7e54f5e9-54a7-424a-a2c7-01004376399f
+      - POSTGRES_DATABASE=spring
+      - POSTGRES_HOST=postgres:5432
+    ports:
+      - '3001:3001'
+    depends_on:
+      - db
+    networks:
+      - backend_network
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    volumes:
+      - './:/app'
+      - '/app/node_modules'
+    ports:
+      - 3000:3000
+    stdin_open: true
+    command: npm start
+    depends_on:
+      - backend
+volumes:
+  db:
+    driver: local
+
+networks:
+  backend_network:
+    name: backend-network
