@@ -8,7 +8,7 @@
 ## Seeding
 Below is an example CURL request to seed data to the database:
 ```
-curl --location 'localhost:3000/products/generate' \
+curl --location 'localhost:3001/products/generate' \
 --header 'Content-Type: application/json' \
 --data '[{
         "name": "product-1",
